@@ -19,3 +19,4 @@ class BattleSnakeCell:
         self.x = x
         self.y = y
         self.type = type
+        self.seen = False # For pathfinding
