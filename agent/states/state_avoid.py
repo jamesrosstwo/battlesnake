@@ -4,14 +4,13 @@ from agent.states.state import BattleSnakeState
 
 @Singleton
 class BattleSnakeAvoidState(BattleSnakeState):
-    def enter(self, entity: "BattleSnakeAgent"):
+    def enter(self, entity):
         pass
 
-    def execute(self, entity: "BattleSnakeAgent"):
+    def execute(self, entity):
         pass
 
-    def exit(self, entity: "BattleSnakeAgent"):
+    def exit(self, entity):
         pass
 
 
-from agent.agent import BattleSnakeAgent

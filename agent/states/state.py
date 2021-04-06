@@ -8,16 +8,14 @@ class BattleSnakeState(ABC):
         pass
 
     @abstractmethod
-    def enter(self, entity: "BattleSnakeAgent"):
+    def enter(self, entity):
         pass
 
     @abstractmethod
-    def execute(self, entity: "BattleSnakeAgent") -> BattleSnakeAction:
+    def execute(self, entity) -> BattleSnakeAction:
         pass
 
     @abstractmethod
-    def exit(self, entity: "BattleSnakeAgent"):
+    def exit(self, entity):
         pass
 
-
-from agent.agent import BattleSnakeAgent

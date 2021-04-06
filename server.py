@@ -65,8 +65,8 @@ class Battlesnake(object):
 
 if __name__ == "__main__":
     server = Battlesnake()
-    cherrypy.config.calculate_action({"server.socket_host": "0.0.0.0"})
-    cherrypy.config.calculate_action(
+    cherrypy.config.update({"server.socket_host": "0.0.0.0"})
+    cherrypy.config.update(
         {"server.socket_port": int(os.environ.get("PORT", "8080")),}
     )
     print("Starting Battlesnake Server...")
