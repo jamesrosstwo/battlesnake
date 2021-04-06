@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from agent.actions.action import BattleSnakeAction
+
 
 class BattleSnakeState(ABC):
     def __init__(self):
@@ -10,7 +12,7 @@ class BattleSnakeState(ABC):
         pass
 
     @abstractmethod
-    def execute(self, entity: "BattleSnakeAgent"):
+    def execute(self, entity: "BattleSnakeAgent") -> BattleSnakeAction:
         pass
 
     @abstractmethod

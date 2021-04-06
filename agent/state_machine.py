@@ -1,5 +1,7 @@
+from agent.actions.action import BattleSnakeAction
 from agent.agent import BattleSnakeAgent
 from agent.states.state import BattleSnakeState
+from agent.states.state_food import BattleSnakeFoodState
 
 
 class BattleSnakeStateMachine:
@@ -16,8 +18,8 @@ class BattleSnakeStateMachine:
         if self.current_state:
             self.current_state.enter(self.owner)
 
-    def update(self):
-        self.current_state.execute(self.owner)
+    def calculate_action(self) -> BattleSnakeAction:
+        return self.current_state.execute(self.owner)
 
     def revert_to_last_state(self):
         if self.previous_state:
