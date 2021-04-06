@@ -3,6 +3,9 @@ import random
 
 import cherrypy
 
+from agent.actions.action import BattleSnakeAction
+from agent.agent import BattleSnakeAgent
+
 """
 This is a simple Battlesnake server written in Python.
 For instructions see https://github.com/BattlesnakeOfficial/starter-snake-python/README.md
@@ -42,13 +45,12 @@ class Battlesnake(object):
         # Valid moves are "up", "down", "left", or "right".
         # TODO: Use the information in cherrypy.request.json to decide your next move.
         data = cherrypy.request.json
+        agent = BattleSnakeAgent()
+        selected_action = agent.act(data)
+        selected_move = BattleSnakeAction.parse_action(selected_action)
 
-        # Choose a random direction to move in
-        possible_moves = ["up", "down", "left", "right"]
-        move = random.choice(possible_moves)
-
-        print(f"MOVE: {move}")
-        return {"move": move}
+        print(f"MOVE: {selected_move}")
+        return {"move": selected_move}
 
     @cherrypy.expose
     @cherrypy.tools.json_in()
