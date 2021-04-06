@@ -47,8 +47,8 @@ class Battlesnake(object):
         data = cherrypy.request.json
         agent = BattleSnakeAgent()
         selected_action = agent.act(data)
+        print("selected move: ", selected_action)
         selected_move = BattleSnakeAction.parse_action(selected_action)
-
 
         print(f"MOVE: {selected_move}")
         return {"move": selected_move}

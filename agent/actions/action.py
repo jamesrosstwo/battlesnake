@@ -9,15 +9,12 @@ class BattleSnakeAction(Enum):
 
     @staticmethod
     def parse_action(action) -> str:
-        return action_map[action]
+        return _action_map[action]
 
 
-action_map = {
+_action_map = {
     BattleSnakeAction.UP: "up",
     BattleSnakeAction.DOWN: "down",
     BattleSnakeAction.LEFT: "left",
     BattleSnakeAction.RIGHT: "right",
 }
-
-
-
