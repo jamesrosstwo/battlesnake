@@ -1,11 +1,13 @@
 from agent.environment.board import BattleSnakeBoard
 from agent.state_machine import BattleSnakeStateMachine
 from agent.actions.action import BattleSnakeAction
+from agent.states.state_food import BattleSnakeFoodState
 
 
 class BattleSnakeAgent:
     def __init__(self):
         self.state_machine = BattleSnakeStateMachine(self)
+        self.board = None
 
     def select_state(self, board) -> "BattleSnakeState":
         pass
@@ -16,11 +18,8 @@ class BattleSnakeAgent:
     def act(self, board_json) -> "BattleSnakeAction":
 
         board = BattleSnakeBoard(board_json)
-        board.print_board()
-        # parsed_board = self.parse_board(board)
-        # self.state_machine.change_state(self.select_state(parsed_board))
-        # return self.state_machine.calculate_action()
-        return BattleSnakeAction.RIGHT
+        self.state_machine.change_state(BattleSnakeFoodState.instance())
+        return self.state_machine.calculate_action()
 
 
 from agent.states.state import BattleSnakeState

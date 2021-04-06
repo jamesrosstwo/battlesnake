@@ -1,3 +1,4 @@
+from agent.actions.action import BattleSnakeAction
 from agent.singleton import Singleton
 from agent.states.state import BattleSnakeState
 
@@ -8,7 +9,7 @@ class BattleSnakeFoodState(BattleSnakeState):
         pass
 
     def execute(self, entity):
-        pass
+        return BattleSnakeAction.LEFT
 
     def exit(self, entity):
         pass

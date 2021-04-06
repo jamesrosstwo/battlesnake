@@ -14,6 +14,9 @@ class BattleSnakeBoard:
         self._add_food(board_json)
         self._add_danger(board_json)
 
+    def get_cell(self, x, y):
+        return self.cells[self.height - y - 1][x]
+
     def _set_cell(self, x, y, type):
         self.cells[self.height - y - 1][x] = BattleSnakeCell(x, y, type)
 
@@ -34,5 +37,3 @@ class BattleSnakeBoard:
                 out_str += cell_symbols[cell.type] + " "
             out_str += "\n"
         print(out_str)
-
-
