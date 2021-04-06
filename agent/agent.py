@@ -2,7 +2,6 @@ from agent.state_machine import BattleSnakeStateMachine
 from agent.actions.action import BattleSnakeAction
 
 
-
 class BattleSnakeAgent:
     def __init__(self):
         self.state_machine = BattleSnakeStateMachine(self)

@@ -49,6 +49,7 @@ class Battlesnake(object):
         selected_action = agent.act(data)
         selected_move = BattleSnakeAction.parse_action(selected_action)
 
+
         print(f"MOVE: {selected_move}")
         return {"move": selected_move}
 
