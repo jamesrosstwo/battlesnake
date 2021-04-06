@@ -15,7 +15,7 @@ class BattleSnakeBoard:
         self._add_danger(board_json)
 
     def _set_cell(self, x, y, type):
-        self.cells[y][x] = BattleSnakeCell(x, y, type)
+        self.cells[self.height - y - 1][x] = BattleSnakeCell(x, y, type)
 
     def _add_food(self, board_json):
         for food in board_json["board"]["food"]:
