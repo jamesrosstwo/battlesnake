@@ -3,8 +3,16 @@ from collections import namedtuple
 from agent.actions.action import BattleSnakeAction
 from agent.environment.cell import BattleSnakeCellType, BattleSnakeCell, cell_symbols
 
-BoardCoord = namedtuple("BoardPoint", "x y")
+class BoardCoord:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
+    def __add__(self, other):
+        return BoardCoord(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        return BoardCoord(self.x - other.x, self.y - other.y)
 
 
 class BattleSnakeBoard:
@@ -39,14 +47,50 @@ class BattleSnakeBoard:
             for body_seg in snake["body"]:
                 self._set_cell(body_seg["x"], body_seg["y"], BattleSnakeCellType.DANGER)
 
+    def _is_valid(self, pos: BoardCoord):
+        return 0 <= pos.x < self.width and 0 <= pos.y < self.height
+
     # BFS Pathfinding on grid from a to b
+    # Template: https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
     @staticmethod
     def next_direction_to(a: BoardCoord, b: BoardCoord):
 
-        heuristic = BattleSnakeBoard.dist
+        # neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
+        #
+        # # Function to print a BFS of graph
+        # def bfs(self, s):
+        #     # Create a queue for BFS
+        #     queue = [s]
+        #
+        #     while queue:
+        #
+        #         # Dequeue a vertex from
+        #         # queue and print it
+        #         s = queue.pop(0)
+        #         print(s, end=" ")
+        #
+        #         # Get all adjacent vertices of the
+        #         # dequeued vertex s. If a adjacent
+        #         # has not been visited, then mark it
+        #         # visited and enqueue it
+        #         for offset in neighbour_offsets:
+        #             new_pos = s + offset
+        #             new_cell = self.get_cell(new_pos)
+        #             if not new_cell.seen:
+        #                 queue.append(new_cell)
+        #                 new_cell.seen = True
+        #
+        # heuristic = BattleSnakeBoard.dist
 
+        d = b - a
+        if d.x > 0:
+            return BattleSnakeAction.RIGHT
+        elif d.x < 0:
+            return BattleSnakeAction.LEFT
+
+        if d.y > 0:
+            return BattleSnakeAction.UP
         return BattleSnakeAction.DOWN
-
 
     # Manhattan distance because we're locked to a grid
     @staticmethod

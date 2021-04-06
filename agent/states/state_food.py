@@ -14,7 +14,7 @@ class BattleSnakeFoodState(BattleSnakeState):
         nearest_food = board.food[0]
         min_dist = BattleSnakeBoard.dist(entity.pos, nearest_food)
         for food in board.food[1:]:
-            d = BattleSnakeBoard.dist(entity.pos, food) < min_dist
+            d = BattleSnakeBoard.dist(entity.pos, food)
             if d < min_dist:
                 min_dist = d
                 nearest_food = food
