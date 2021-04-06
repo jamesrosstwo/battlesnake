@@ -17,7 +17,7 @@ class BattleSnakeStateMachine:
             self.current_state.enter(self.owner)
 
     def update(self):
-        self.current_state.execute()
+        self.current_state.execute(self.owner)
 
     def revert_to_last_state(self):
         if self.previous_state:
