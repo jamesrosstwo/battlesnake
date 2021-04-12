@@ -71,10 +71,8 @@ class BattleSnakeBoard:
     def _is_valid(self, pos: BoardCoord):
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 
-    # BFS Pathfinding on grid from a to b
-    # Template: https://www.geeksforgeeks.org/breadth-first-search-or-bfs-for-a-graph/
     @staticmethod
-    def next_direction_to(self, a: BoardCoord, b: BoardCoord):
+    def get_path(self, a: BoardCoord, b: BoardCoord):
 
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
 

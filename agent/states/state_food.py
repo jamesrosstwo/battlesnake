@@ -19,9 +19,17 @@ class BattleSnakeFoodState(BattleSnakeState):
                 min_dist = d
                 nearest_food = food
 
-        return BattleSnakeBoard.next_direction_to(entity.pos, nearest_food)
+        path = BattleSnakeBoard.get_path(entity.pos, nearest_food)
+        next_node = path[1].position
+        d = next_node - entity.pos
+        if d.x > 0:
+            return BattleSnakeAction.RIGHT
+        elif d.x < 0:
+            return BattleSnakeAction.LEFT
+
+        if d.y > 0:
+            return BattleSnakeAction.UP
+        return BattleSnakeAction.DOWN
 
     def exit(self, entity):
         pass
-
-
