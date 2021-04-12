@@ -77,7 +77,7 @@ class BattleSnakeBoard:
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 
     def _is_empty(self, pos: BoardCoord):
-        return self.get_cell_from_coord(pos).type is BattleSnakeCellType.EMPTY
+        return self.get_cell_from_coord(pos).type == BattleSnakeCellType.EMPTY
 
     def get_empty_neighbours(self, pos: BoardCoord):
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
