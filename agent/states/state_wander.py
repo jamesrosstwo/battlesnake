@@ -23,12 +23,11 @@ class BattleSnakeWanderState(BattleSnakeState):
                 possible_moves.append(BattleSnakeAction.RIGHT)
             elif d.x < 0:
                 possible_moves.append(BattleSnakeAction.LEFT)
-
-            if d.y > 0:
+            elif d.y > 0:
                 possible_moves.append(BattleSnakeAction.UP)
-            possible_moves.append(BattleSnakeAction.DOWN)
+            else:
+                possible_moves.append(BattleSnakeAction.DOWN)
 
-        print(f"Move options: {possible_moves}")
         return random.choice(possible_moves)
 
     def exit(self, entity):
