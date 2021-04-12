@@ -68,6 +68,10 @@ class BattleSnakeBoard:
             for body_seg in snake["body"]:
                 self._set_cell(body_seg["x"], body_seg["y"], BattleSnakeCellType.DANGER)
 
+    def _add_body(self, board_json):
+        for body_seg in board_json["you"]["body"]:
+            self._set_cell(body_seg["x"], body_seg["y"], BattleSnakeCellType.BODY)
+
     def _is_valid(self, pos: BoardCoord):
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 

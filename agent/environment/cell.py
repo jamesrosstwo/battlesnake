@@ -5,12 +5,14 @@ class BattleSnakeCellType(Enum):
     DANGER = auto()
     FOOD = auto()
     EMPTY = auto()
+    BODY = auto()
 
 
 cell_symbols = {
     BattleSnakeCellType.DANGER: "D",
     BattleSnakeCellType.FOOD: "F",
-    BattleSnakeCellType.EMPTY: "."
+    BattleSnakeCellType.EMPTY: ".",
+    BattleSnakeCellType.BODY: "B"
 }
 
 
