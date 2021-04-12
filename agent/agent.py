@@ -20,7 +20,7 @@ class BattleSnakeAgent:
     def act(self, board_json) -> "BattleSnakeAction":
         self.board = BattleSnakeBoard(board_json)
         self.pos = BoardCoord(board_json["you"]["head"]["x"], board_json["you"]["head"]["y"])
-        self.state_machine.change_state(BattleSnakeWanderState.instance())
+        self.state_machine.change_state(BattleSnakeFoodState.instance())
         return self.state_machine.calculate_action()
 
 

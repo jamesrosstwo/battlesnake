@@ -6,7 +6,7 @@ from agent.states.state_wander import BattleSnakeWanderState
 class BattleSnakeStateMachine:
     def __init__(self, owner):
         self.owner = owner
-        self.current_state: "BattleSnakeState" = BattleSnakeWanderState.instance()
+        self.current_state: "BattleSnakeState" = BattleSnakeFoodState.instance()
         self.previous_state: "BattleSnakeState" = None
 
     def change_state(self, new_state: "BattleSnakeState"):

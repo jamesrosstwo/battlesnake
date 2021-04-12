@@ -151,7 +151,7 @@ class BattleSnakeBoard:
                         continue
 
                     # Make sure walkable terrain
-                    if self.get_cell(node_position).type == BattleSnakeCellType.DANGER:
+                    if self._is_walkable(node_position):
                         continue
 
                     # Create new node
