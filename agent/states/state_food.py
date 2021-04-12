@@ -26,10 +26,10 @@ class BattleSnakeFoodState(BattleSnakeState):
             return BattleSnakeAction.RIGHT
         elif d.x < 0:
             return BattleSnakeAction.LEFT
-
-        if d.y > 0:
+        elif d.y > 0:
             return BattleSnakeAction.UP
-        return BattleSnakeAction.DOWN
+        else:
+            return BattleSnakeAction.DOWN
 
     def exit(self, entity):
         pass

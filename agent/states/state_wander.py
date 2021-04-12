@@ -14,11 +14,11 @@ class BattleSnakeWanderState(BattleSnakeState):
     def execute(self, entity):
         board = entity.board
         pos = entity.pos
-        empty_neighbours = board.get_empty_neighbours(pos)
+        empty_neighbours = board.get_walkable_neighbours(pos)
         possible_moves = []
 
-        for empty_pos in empty_neighbours:
-            d = empty_pos - pos
+        for neighbour in empty_neighbours:
+            d = neighbour - pos
             if d.x > 0:
                 possible_moves.append(BattleSnakeAction.RIGHT)
             elif d.x < 0:

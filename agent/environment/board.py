@@ -76,10 +76,10 @@ class BattleSnakeBoard:
     def _is_valid(self, pos: BoardCoord):
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 
-    def _is_empty(self, pos: BoardCoord):
-        return self.get_cell_from_coord(pos).type == BattleSnakeCellType.EMPTY
+    def _is_walkable(self, pos: BoardCoord):
+        return self.get_cell_from_coord(pos).type in (BattleSnakeCellType.EMPTY, BattleSnakeCellType.FOOD)
 
-    def get_empty_neighbours(self, pos: BoardCoord):
+    def get_walkable_neighbours(self, pos: BoardCoord):
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
         neighbours = []
         for offset in neighbour_offsets:  # Adjacent squares
@@ -87,7 +87,7 @@ class BattleSnakeBoard:
             neighbour_pos = pos + offset
 
             # Make sure within range and empty
-            if not self._is_valid(neighbour_pos) or not self._is_empty(neighbour_pos):
+            if not self._is_valid(neighbour_pos) or not self._is_walkable(neighbour_pos):
                 continue
 
             neighbours.append(neighbour_pos)
