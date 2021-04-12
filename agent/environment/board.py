@@ -78,6 +78,21 @@ class BattleSnakeBoard:
     def _is_empty(self, pos: BoardCoord):
         return self.get_cell_from_coord(pos) is BattleSnakeCellType.EMPTY
 
+    def get_empty_neighbours(self, pos: BoardCoord):
+        neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
+        neighbours = []
+        for offset in neighbour_offsets:  # Adjacent squares
+            # Get position
+            neighbour_pos = pos + offset
+
+            # Make sure within range and empty
+            if not self._is_valid(neighbour_pos) and self._is_empty(neighbour_pos):
+                continue
+
+            neighbours.append(neighbour_pos)
+
+        return neighbours
+
     @staticmethod
     def get_path(self, a: BoardCoord, b: BoardCoord):
 
