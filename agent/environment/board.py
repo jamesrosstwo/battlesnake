@@ -75,6 +75,9 @@ class BattleSnakeBoard:
     def _is_valid(self, pos: BoardCoord):
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 
+    def _is_empty(self, pos: BoardCoord):
+        return self.get_cell_from_coord(pos) is BattleSnakeCellType.EMPTY
+
     @staticmethod
     def get_path(self, a: BoardCoord, b: BoardCoord):
 
