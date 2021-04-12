@@ -87,7 +87,7 @@ class BattleSnakeBoard:
             neighbour_pos = pos + offset
 
             # Make sure within range and empty
-            if not self._is_valid(neighbour_pos) and self._is_empty(neighbour_pos):
+            if not self._is_valid(neighbour_pos) and not self._is_empty(neighbour_pos):
                 continue
 
             neighbours.append(neighbour_pos)
