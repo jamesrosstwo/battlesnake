@@ -4,6 +4,7 @@ from collections import namedtuple
 
 from agent.actions.action import BattleSnakeAction
 from agent.environment.cell import BattleSnakeCellType, BattleSnakeCell, cell_symbols
+i = 0
 
 
 class BoardCoord:
@@ -16,6 +17,10 @@ class BoardCoord:
 
     def __sub__(self, other):
         return BoardCoord(self.x - other.x, self.y - other.y)
+
+    def __str__(self):
+        return str(self.x) + ", " + str(self.y)
+
 
 
 class SearchNode:
@@ -31,6 +36,15 @@ class SearchNode:
 
     def __eq__(self, other):
         return self.position == other.position
+
+    def pos(self):
+      return (self.position.x, self.position.y)
+
+    def __str__(self):
+        if self.parent is None:
+            return str(self.position)
+        return str(self.position) + "stats: " + str(self.f) + " " + str(self.g) + " " + str(
+            self.h) + ", parent: " + str(self.parent.position)
 
 
 class BattleSnakeBoard:
@@ -71,9 +85,10 @@ class BattleSnakeBoard:
     def _is_valid(self, pos: BoardCoord):
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 
-    @staticmethod
+
     def get_path(self, a: BoardCoord, b: BoardCoord):
 
+        print("searching from", a, "to", b)
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
 
         def astar(start, end):
@@ -87,13 +102,16 @@ class BattleSnakeBoard:
 
             # Initialize both open and closed list
             open_list = []
-            closed_list = []
+            closed_set = set()
 
             # Add the start node
             open_list.append(start_node)
 
             # Loop until you find the end
             while len(open_list) > 0:
+                global i
+                print(i)
+                i += 1
 
                 # Get the current node
                 current_node = open_list[0]
@@ -105,7 +123,7 @@ class BattleSnakeBoard:
 
                 # Pop current off open list, add to closed list
                 open_list.pop(current_index)
-                closed_list.append(current_node)
+                closed_set.add(current_node.pos())
 
                 # Found the goal
                 if current_node == end_node:
@@ -114,6 +132,7 @@ class BattleSnakeBoard:
                     while current is not None:
                         path.append(current.position)
                         current = current.parent
+                    print("found path:", list(path[::-1]))
                     return path[::-1]  # Return reversed path
 
                 # Generate children
@@ -124,11 +143,14 @@ class BattleSnakeBoard:
                     node_position = current_node.position + offset
 
                     # Make sure within range
-                    if not self.is_valid(offset):
+                    if not self._is_valid(node_position):
                         continue
 
+                    if (node_position.x, node_position.y) in closed_set:
+                      continue
+
                     # Make sure walkable terrain
-                    if self.get_cell(node_position).type == BattleSnakeCellType.DANGER:
+                    if self.get_cell_from_coord(node_position).type == BattleSnakeCellType.DANGER:
                         continue
 
                     # Create new node
@@ -141,14 +163,16 @@ class BattleSnakeBoard:
                 for child in children:
 
                     # Child is on the closed list
-                    for closed_child in closed_list:
-                        if child == closed_child:
-                            continue
+                    if child.pos() in closed_set:
+                        print("closed", child)
+                        continue
 
                     # Create the f, g, and h values
                     child.g = current_node.g + 1
                     child.g = self.dist(child.position, end_node.position)
                     child.f = child.g + child.h
+
+                    # print("created new node", child)
 
                     # Child is already in the open list
                     for open_node in open_list:
@@ -157,8 +181,11 @@ class BattleSnakeBoard:
 
                     # Add the child to the open list
                     open_list.append(child)
+            print("exited")
 
-        return astar(a, b)
+        res = astar(a, b)
+        print("completed astar", res)
+        return res
 
     # Manhattan distance because we're locked to a grid
     @staticmethod

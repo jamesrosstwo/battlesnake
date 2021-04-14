@@ -18,8 +18,10 @@ class BattleSnakeFoodState(BattleSnakeState):
             if d < min_dist:
                 min_dist = d
                 nearest_food = food
-
-        path = BattleSnakeBoard.get_path(entity.pos, nearest_food)
+        print("nearest food", nearest_food)
+        path = board.get_path(entity.pos, nearest_food)
+        print("path found")
+        print(path)
         next_node = path[1].position
         d = next_node - entity.pos
         if d.x > 0:
