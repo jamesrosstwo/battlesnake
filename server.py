@@ -15,16 +15,19 @@ For instructions see https://github.com/BattlesnakeOfficial/starter-snake-python
 class Battlesnake(object):
     @cherrypy.expose
     @cherrypy.tools.json_out()
+
     def index(self):
+        rbc_blue = "#0059b3"
+        rbc_gold = "ffdd01"
         # This function is called when you register your Battlesnake on play.battlesnake.com
         # It controls your Battlesnake appearance and author permissions.
         # TIP: If you open your Battlesnake URL in browser you should see this data
         return {
             "apiversion": "1",
             "author": "",  # TODO: Your Battlesnake Username
-            "color": "#888888",  # TODO: Personalize
+            "color": rbc_blue,  # TODO: Personalize
             "head": "default",  # TODO: Personalize
-            "tail": "default",  # TODO: Personalize
+            "tail": "curly",  # TODO: Personalize
         }
 
     @cherrypy.expose
