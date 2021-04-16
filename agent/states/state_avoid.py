@@ -8,7 +8,7 @@ import random
 
 def try_rand_paths(board, entity):
     path = None
-    shuffled_coords = [x.get_pos() for x in board.cells]
+    shuffled_coords = [x.get_pos() for x in [cell for row in board.cells for cell in row]]
     random.shuffle(shuffled_coords)
 
     for coord in shuffled_coords:
@@ -18,6 +18,15 @@ def try_rand_paths(board, entity):
             break
         except KeyError:
             continue  # No path
+
+    if path is None:
+        for coord in shuffled_coords:
+            try:
+                try_path = board.get_path(entity.snake.head, coord)
+                path = try_path
+                break
+            except KeyError:
+                continue  # No path
 
     return path
 

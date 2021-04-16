@@ -43,8 +43,8 @@ class BattleSnakeFoodState(BattleSnakeState):
         food_by_dist = sorted(board.food, key=lambda x: BattleSnakeBoard.dist(entity.snake.head, x))
 
         path = try_safe_food_paths(board, entity, food_by_dist)
-        if path is None:
-            path = try_food_paths(board, entity, food_by_dist)
+        # if path is None:
+        #     path = try_food_paths(board, entity, food_by_dist)
 
         if path is None:
             entity.state_machine.change_state(BattleSnakeAvoidState.instance())
