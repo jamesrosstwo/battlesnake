@@ -4,8 +4,14 @@ from typing import List, Tuple, Dict, Optional
 from agent.data_structures import Queue, PriorityQueue
 from agent.environment.cell import BattleSnakeCellType, BattleSnakeCell, cell_symbols
 from agent.environment.coord import BoardCoord
+from agent.environment.snake import BattleSnakeSnake
 
 i = 0
+
+
+def _get_snakes_from_json(board_json):
+    snake_json = board_json["board"]["snakes"]
+    return [BattleSnakeSnake(x) for x in snake_json]
 
 
 class BattleSnakeBoard:
@@ -22,6 +28,8 @@ class BattleSnakeBoard:
 
         self._add_food(board_json)
         self._add_danger(board_json)
+        self.snakes = _get_snakes_from_json(board_json)
+        self.num_snakes = len(self.snakes)
 
     def get_cell(self, x, y) -> BattleSnakeCell:
         return self.cells[self.height - y - 1][x]
@@ -55,7 +63,7 @@ class BattleSnakeBoard:
         if not self._is_safe(pos):
             return False
         adj_safe = [x for x in self._neighbours(pos) if self.get_cell_from_coord(x).type != BattleSnakeCellType.DANGER]
-        return len(adj_safe) >= 3 # Our previous body segment is danger, so only look for three
+        return len(adj_safe) >= 3  # Our previous body segment is danger, so only look for three
 
     def _safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
         return [x for x in self._neighbours(pos) if self._is_safe(x)]
@@ -68,7 +76,7 @@ class BattleSnakeBoard:
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
         return [pos + x for x in neighbour_offsets if self._is_extra_safe(pos + x)]
 
-    def get_path(self, start: BoardCoord, goal: BoardCoord, neighbour_func = None):
+    def get_path(self, start: BoardCoord, goal: BoardCoord, neighbour_func=None):
         if not neighbour_func:
             neighbour_func = self._safe_neighbours
 

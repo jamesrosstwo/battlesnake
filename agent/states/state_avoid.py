@@ -13,7 +13,7 @@ def try_rand_paths(board, entity):
 
     for coord in shuffled_coords:
         try:
-            try_path = board.get_safe_path(entity.pos, coord)
+            try_path = board.get_safe_path(entity.snake.head, coord)
             path = try_path
             break
         except KeyError:
@@ -32,7 +32,7 @@ class BattleSnakeAvoidState(BattleSnakeState):
 
         path = try_rand_paths(board, entity)
         next_node = BoardCoord(*path[0])
-        d = next_node - entity.pos
+        d = next_node - entity.snake.head
         return get_action_to(d)
 
     def exit(self, entity):

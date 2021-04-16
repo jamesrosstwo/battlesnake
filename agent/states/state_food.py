@@ -10,7 +10,7 @@ def try_safe_food_paths(board, entity, food_by_dist):
     path = None
     for food in food_by_dist:
         try:
-            try_path = board.get_safe_path(entity.pos, food)
+            try_path = board.get_safe_path(entity.snake.head, food)
             path = try_path
             print("found safe path")
             break
@@ -24,7 +24,7 @@ def try_food_paths(board, entity, food_by_dist):
     path = None
     for food in food_by_dist:
         try:
-            try_path = board.get_path(entity.pos, food)
+            try_path = board.get_path(entity.snake.head, food)
             path = try_path
             break
         except KeyError:
@@ -40,7 +40,7 @@ class BattleSnakeFoodState(BattleSnakeState):
 
     def execute(self, entity):
         board = entity.board
-        food_by_dist = sorted(board.food, key=lambda x: BattleSnakeBoard.dist(entity.pos, x))
+        food_by_dist = sorted(board.food, key=lambda x: BattleSnakeBoard.dist(entity.snake.head, x))
 
         path = try_safe_food_paths(board, entity, food_by_dist)
         if path is None:
@@ -50,7 +50,7 @@ class BattleSnakeFoodState(BattleSnakeState):
             entity.state_machine.change_state(BattleSnakeAvoidState.instance())
             return entity.state_machine.calculate_action()
         next_node = BoardCoord(*path[0])
-        d = next_node - entity.pos
+        d = next_node - entity.snake.head
         return get_action_to(d)
 
     def exit(self, entity):
