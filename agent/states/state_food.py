@@ -1,5 +1,5 @@
 from agent.actions.action import BattleSnakeAction
-from agent.environment.board import BattleSnakeBoard
+from agent.environment.board import BattleSnakeBoard, BoardCoord
 from agent.singleton import Singleton
 from agent.states.state import BattleSnakeState
 
@@ -21,8 +21,8 @@ class BattleSnakeFoodState(BattleSnakeState):
         print("nearest food", nearest_food)
         path = board.get_path(entity.pos, nearest_food)
         print("path found")
-        print(path)
-        next_node = path[1].position
+        next_node = BoardCoord(*path[0])
+        print(next_node)
         d = next_node - entity.pos
         if d.x > 0:
             return BattleSnakeAction.RIGHT

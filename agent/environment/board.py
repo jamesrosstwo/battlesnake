@@ -1,9 +1,12 @@
-# Partially taken from https://medium.com/@nicholas.w.swift/easy-a-star-pathfinding-7e6689c7f7b2
+# Partially taken from https://www.redblobgames.com/pathfinding/a-star/implementation.html
 
 from collections import namedtuple
-
+from typing import List, Tuple, Dict, Optional
+import numpy as np
 from agent.actions.action import BattleSnakeAction
+from agent.data_structures import Queue, PriorityQueue
 from agent.environment.cell import BattleSnakeCellType, BattleSnakeCell, cell_symbols
+
 i = 0
 
 
@@ -21,30 +24,14 @@ class BoardCoord:
     def __str__(self):
         return str(self.x) + ", " + str(self.y)
 
-
-
-class SearchNode:
-    """A node class for A* Pathfinding"""
-
-    def __init__(self, parent=None, position: BoardCoord = None):
-        self.parent = parent
-        self.position = position
-
-        self.g = 0
-        self.h = 0
-        self.f = 0
-
     def __eq__(self, other):
-        return self.position == other.position
+        return self.x == other.x and self.y == other.y
 
-    def pos(self):
-      return (self.position.x, self.position.y)
+    def __hash__(self):
+        return hash((self.x, self.y))
 
-    def __str__(self):
-        if self.parent is None:
-            return str(self.position)
-        return str(self.position) + "stats: " + str(self.f) + " " + str(self.g) + " " + str(
-            self.h) + ", parent: " + str(self.parent.position)
+    def get_tuple(self):
+        return self.x, self.y
 
 
 class BattleSnakeBoard:
@@ -85,107 +72,52 @@ class BattleSnakeBoard:
     def _is_valid(self, pos: BoardCoord):
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 
+    def _is_safe(self, pos: BoardCoord):
+        if not self._is_valid(pos):
+            return False
+        return self.get_cell_from_coord(pos).type != BattleSnakeCellType.DANGER
 
-    def get_path(self, a: BoardCoord, b: BoardCoord):
-
-        print("searching from", a, "to", b)
+    def _safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
+        return [pos + x for x in neighbour_offsets if self._is_safe(pos + x)]
 
-        def astar(start, end):
-            """Returns a list of tuples as a path from the given start to the given end in the given maze"""
+    def get_path(self, start: BoardCoord, goal: BoardCoord):
 
-            # Create start and end node
-            start_node = SearchNode(None, start)
-            start_node.g = start_node.h = start_node.f = 0
-            end_node = SearchNode(None, end)
-            end_node.g = end_node.h = end_node.f = 0
 
-            # Initialize both open and closed list
-            open_list = []
-            closed_set = set()
+        def dijkstra_search():
+            frontier = PriorityQueue()
+            frontier.put(start.get_tuple(), 0)
+            came_from: Dict[Tuple, Optional[Tuple]] = dict()
+            cost_so_far: Dict[Tuple, float] = dict()
+            came_from[start.get_tuple()] = None
+            cost_so_far[start.get_tuple()] = 0
 
-            # Add the start node
-            open_list.append(start_node)
+            while not frontier.empty():
+                current: Tuple = frontier.get()
 
-            # Loop until you find the end
-            while len(open_list) > 0:
-                global i
-                print(i)
-                i += 1
+                if current == goal.get_tuple():
+                    break
 
-                # Get the current node
-                current_node = open_list[0]
-                current_index = 0
-                for index, item in enumerate(open_list):
-                    if item.f < current_node.f:
-                        current_node = item
-                        current_index = index
+                for n in self._safe_neighbours(BoardCoord(*current)):
+                    new_cost = cost_so_far[current] + 1
+                    if n.get_tuple() not in cost_so_far or new_cost < cost_so_far[n.get_tuple()]:
+                        cost_so_far[n.get_tuple()] = new_cost
+                        priority = new_cost
+                        frontier.put(n.get_tuple(), priority)
+                        came_from[n.get_tuple()] = current
+            return came_from, cost_so_far
 
-                # Pop current off open list, add to closed list
-                open_list.pop(current_index)
-                closed_set.add(current_node.pos())
+        def reconstruct_path(came_from: Dict[Tuple, Tuple]) -> List[Tuple]:
+            current: Tuple = goal.get_tuple()
+            path: List[Tuple] = []
+            while current != start.get_tuple():
+                path.append(current)
+                current = came_from[current]
+            path.reverse()  # optional
+            return path
 
-                # Found the goal
-                if current_node == end_node:
-                    path = []
-                    current = current_node
-                    while current is not None:
-                        path.append(current.position)
-                        current = current.parent
-                    print("found path:", list(path[::-1]))
-                    return path[::-1]  # Return reversed path
-
-                # Generate children
-                children = []
-                for offset in neighbour_offsets:  # Adjacent squares
-
-                    # Get node position
-                    node_position = current_node.position + offset
-
-                    # Make sure within range
-                    if not self._is_valid(node_position):
-                        continue
-
-                    if (node_position.x, node_position.y) in closed_set:
-                      continue
-
-                    # Make sure walkable terrain
-                    if self.get_cell_from_coord(node_position).type == BattleSnakeCellType.DANGER:
-                        continue
-
-                    # Create new node
-                    new_node = SearchNode(current_node, node_position)
-
-                    # Append
-                    children.append(new_node)
-
-                # Loop through children
-                for child in children:
-
-                    # Child is on the closed list
-                    if child.pos() in closed_set:
-                        print("closed", child)
-                        continue
-
-                    # Create the f, g, and h values
-                    child.g = current_node.g + 1
-                    child.g = self.dist(child.position, end_node.position)
-                    child.f = child.g + child.h
-
-                    # print("created new node", child)
-
-                    # Child is already in the open list
-                    for open_node in open_list:
-                        if child == open_node and child.g > open_node.g:
-                            continue
-
-                    # Add the child to the open list
-                    open_list.append(child)
-            print("exited")
-
-        res = astar(a, b)
-        print("completed astar", res)
-        return res
+        c_f, c_s_f = dijkstra_search()
+        return reconstruct_path(c_f)
 
     # Manhattan distance because we're locked to a grid
     @staticmethod
