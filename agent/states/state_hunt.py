@@ -17,7 +17,6 @@ def try_hunt_paths(board, entity, heads_by_dist):
         except KeyError:
             continue  # No path
 
-    # Chase dangerously after other snakes if necessary
     for head in heads_by_dist:
         try:
             try_path = board.get_path(entity.snake.head, head)
@@ -45,6 +44,9 @@ class BattleSnakeHuntState(BattleSnakeState):
             entity.state_machine.change_state(BattleSnakeFoodState.instance())
             return entity.state_machine.calculate_action()
         path = try_hunt_paths(board, entity, smaller_snake_heads)
+        if path is None:
+            entity.state_machine.change_state(BattleSnakeFoodState.instance())
+            return entity.state_machine.calculate_action()
         next_node = BoardCoord(*path[0])
         d = next_node - entity.snake.head
         return get_action_to(d)
