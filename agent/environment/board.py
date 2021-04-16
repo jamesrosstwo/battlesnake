@@ -54,9 +54,8 @@ class BattleSnakeBoard:
     def _is_extra_safe(self, pos: BoardCoord):
         if not self._is_safe(pos):
             return False
-        adj_safe = [self.get_cell_from_coord(x).type != BattleSnakeCellType.DANGER for x in self._neighbours(pos)]
-        print(adj_safe)
-        return all(adj_safe)
+        adj_safe = [x for x in self._neighbours(pos) if self.get_cell_from_coord(x).type != BattleSnakeCellType.DANGER]
+        return len(adj_safe) >= 3 # Our previous body segment is danger, so only look for three
 
     def _safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
         return [x for x in self._neighbours(pos) if self._is_safe(x)]
