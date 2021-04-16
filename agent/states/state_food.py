@@ -15,9 +15,19 @@ def try_safe_food_paths(board, entity, food_by_dist):
             return try_path
         except KeyError:
             continue  # No path
-
     return None
 
+
+def try_food_paths(board, entity, food_by_dist):
+    for food in food_by_dist:
+        try:
+            try_path = board.get_path(entity.snake.head, food)
+            if len(try_path) == 0:
+                continue
+            return try_path
+        except KeyError:
+            continue  # No path
+    return None
 
 
 @Singleton
@@ -30,8 +40,10 @@ class BattleSnakeFoodState(BattleSnakeState):
         food_by_dist = sorted(board.food, key=lambda x: BattleSnakeBoard.dist(entity.snake.head, x))
 
         path = try_safe_food_paths(board, entity, food_by_dist)
-        # if path is None:
-        #     path = try_food_paths(board, entity, food_by_dist)
+        if path is None:
+            smaller_snakes = [x for x in board.snakes if x.length < entity.snake.length]
+            if len(smaller_snakes) < min(1, (board.num_snakes - 1)) or entity.snake.health < 40:
+                path = try_food_paths(board, entity, food_by_dist)
 
         if path is None:
             entity.state_machine.change_state(BattleSnakeAvoidState.instance())

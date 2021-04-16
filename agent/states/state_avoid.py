@@ -10,7 +10,6 @@ def try_rand_paths(board, entity):
     shuffled_coords = [x.get_pos() for x in [cell for row in board.cells for cell in row]]
     random.shuffle(shuffled_coords)
 
-    print("Checking safe")
     for coord in shuffled_coords:
         try:
             try_path = board.get_safe_path(entity.snake.head, coord)
@@ -20,7 +19,6 @@ def try_rand_paths(board, entity):
         except KeyError:
             continue  # No path
 
-    print("Checking unsafe")
     if path is None:
         for coord in shuffled_coords:
             try:
@@ -43,7 +41,6 @@ class BattleSnakeAvoidState(BattleSnakeState):
         board = entity.board
 
         path = try_rand_paths(board, entity)
-        print(path)
         next_node = BoardCoord(*path[0])
         d = next_node - entity.snake.head
         return get_action_to(d)

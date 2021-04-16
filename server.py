@@ -50,9 +50,7 @@ class Battlesnake(object):
         # TODO: Use the information in cherrypy.request.json to decide your next move.
         data = cherrypy.request.json
         agent = BattleSnakeAgent()
-        print("beginning")
         selected_action = agent.act(data)
-        print("selected move: ", selected_action)
         selected_move = BattleSnakeAction.parse_action(selected_action)
 
         print(f"MOVE: {selected_move}")
