@@ -1,4 +1,4 @@
-from agent.actions.action import BattleSnakeAction
+from agent.actions.action import BattleSnakeAction, get_dir_to
 from agent.environment.board import BattleSnakeBoard, BoardCoord
 from agent.singleton import Singleton
 from agent.states.state import BattleSnakeState
@@ -11,27 +11,19 @@ class BattleSnakeFoodState(BattleSnakeState):
 
     def execute(self, entity):
         board = entity.board
-        nearest_food = board.food[0]
-        min_dist = BattleSnakeBoard.dist(entity.pos, nearest_food)
-        for food in board.food[1:]:
-            d = BattleSnakeBoard.dist(entity.pos, food)
-            if d < min_dist:
-                min_dist = d
-                nearest_food = food
-        print("nearest food", nearest_food)
-        path = board.get_path(entity.pos, nearest_food)
-        print("path found")
-        next_node = BoardCoord(*path[0])
-        print(next_node)
-        d = next_node - entity.pos
-        if d.x > 0:
-            return BattleSnakeAction.RIGHT
-        elif d.x < 0:
-            return BattleSnakeAction.LEFT
+        food_by_dist = sorted(board.food, key=lambda x: BattleSnakeBoard.dist(entity.pos, x))
 
-        if d.y > 0:
-            return BattleSnakeAction.UP
-        return BattleSnakeAction.DOWN
+        path = None
+        for food in food_by_dist:
+            try:
+                try_path = board.get_path(entity.pos, food)
+            except KeyError:
+                continue  # No path
+            path = try_path
+
+        next_node = BoardCoord(*path[0])
+        d = next_node - entity.pos
+        return get_dir_to(d)
 
     def exit(self, entity):
         pass

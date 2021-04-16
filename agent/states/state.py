@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from agent.actions.action import BattleSnakeAction
 
 
+
 class BattleSnakeState(ABC):
     def __init__(self):
         pass

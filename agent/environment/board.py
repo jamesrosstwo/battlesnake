@@ -1,9 +1,6 @@
 # Partially taken from https://www.redblobgames.com/pathfinding/a-star/implementation.html
 
-from collections import namedtuple
 from typing import List, Tuple, Dict, Optional
-import numpy as np
-from agent.actions.action import BattleSnakeAction
 from agent.data_structures import Queue, PriorityQueue
 from agent.environment.cell import BattleSnakeCellType, BattleSnakeCell, cell_symbols
 
@@ -77,12 +74,26 @@ class BattleSnakeBoard:
             return False
         return self.get_cell_from_coord(pos).type != BattleSnakeCellType.DANGER
 
+    def _is_extra_safe(self, pos: BoardCoord):
+        if not self._is_safe(pos):
+            return False
+        adj_danger = [self.get_cell_from_coord(x).type == BattleSnakeCellType.DANGER for x in self._neighbours(pos)]
+        return not any(adj_danger)
+
     def _safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
+        return [x for x in self._neighbours(pos) if self._is_safe(x)]
+
+    def _neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
-        return [pos + x for x in neighbour_offsets if self._is_safe(pos + x)]
+        return [pos + x for x in neighbour_offsets if self._is_valid(pos + x)]
 
-    def get_path(self, start: BoardCoord, goal: BoardCoord):
+    def _extra_safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
+        neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
+        return [pos + x for x in neighbour_offsets if self._is_extra_safe(pos + x)]
 
+    def get_path(self, start: BoardCoord, goal: BoardCoord, neighbour_func = None):
+        if not neighbour_func:
+            neighbour_func = self._safe_neighbours
 
         def dijkstra_search():
             frontier = PriorityQueue()
@@ -98,7 +109,7 @@ class BattleSnakeBoard:
                 if current == goal.get_tuple():
                     break
 
-                for n in self._safe_neighbours(BoardCoord(*current)):
+                for n in neighbour_func(BoardCoord(*current)):
                     new_cost = cost_so_far[current] + 1
                     if n.get_tuple() not in cost_so_far or new_cost < cost_so_far[n.get_tuple()]:
                         cost_so_far[n.get_tuple()] = new_cost

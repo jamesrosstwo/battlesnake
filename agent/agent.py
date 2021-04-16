@@ -24,4 +24,5 @@ class BattleSnakeAgent:
         return self.state_machine.calculate_action()
 
 
+
 from agent.states.state import BattleSnakeState
