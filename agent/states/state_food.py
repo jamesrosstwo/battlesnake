@@ -7,30 +7,17 @@ from agent.states.state_avoid import BattleSnakeAvoidState
 
 
 def try_safe_food_paths(board, entity, food_by_dist):
-    path = None
     for food in food_by_dist:
         try:
             try_path = board.get_safe_path(entity.snake.head, food)
-            path = try_path
-            print("found safe path")
-            break
+            if len(try_path) == 0:
+                continue
+            return try_path
         except KeyError:
             continue  # No path
 
-    return path
+    return None
 
-
-def try_food_paths(board, entity, food_by_dist):
-    path = None
-    for food in food_by_dist:
-        try:
-            try_path = board.get_path(entity.snake.head, food)
-            path = try_path
-            break
-        except KeyError:
-            continue  # No path
-
-    return path
 
 
 @Singleton

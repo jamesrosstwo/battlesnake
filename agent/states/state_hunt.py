@@ -8,26 +8,25 @@ from agent.states.state_food import BattleSnakeFoodState
 
 
 def try_hunt_paths(board, entity, heads_by_dist):
-    path = None
     for head in heads_by_dist:
         try:
             try_path = board.get_safe_path(entity.snake.head, head)
-            path = try_path
-            break
+            if len(try_path) == 0:
+                continue
+            return try_path
         except KeyError:
             continue  # No path
 
     # Chase dangerously after other snakes if necessary
-    if path is None:
-        for head in heads_by_dist:
-            try:
-                try_path = board.get_path(entity.snake.head, head)
-                path = try_path
-                break
-            except KeyError:
-                continue  # No path
-
-    return path
+    for head in heads_by_dist:
+        try:
+            try_path = board.get_path(entity.snake.head, head)
+            if len(try_path) == 0:
+                continue
+            return try_path
+        except KeyError:
+            continue  # No path
+    return None
 
 
 @Singleton
