@@ -36,7 +36,7 @@ class BattleSnakeHuntState(BattleSnakeState):
     def execute(self, entity):
         board = entity.board
 
-        smaller_snakes = [x for x in board.snakes if x.length + 1 < entity.snake.length]
+        smaller_snakes = [x for x in board.snakes if x.length + 2 < entity.snake.length]
         smaller_snake_heads = [x.head for x in smaller_snakes]
 
         # Don't chase after smaller snakes if there aren't many of them
