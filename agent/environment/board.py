@@ -29,6 +29,7 @@ class BattleSnakeBoard:
         self._add_food(board_json)
         self._add_danger(board_json)
         self.snakes = _get_snakes_from_json(board_json)
+        self._add_heads(board_json)
         self.num_snakes = len(self.snakes)
 
     def get_cell(self, x, y) -> BattleSnakeCell:
@@ -51,6 +52,16 @@ class BattleSnakeBoard:
             for body_seg in snake["body"]:
                 self._set_cell(body_seg["x"], body_seg["y"], BattleSnakeCellType.DANGER)
 
+    def _add_heads(self, board_json):
+        for snake in self.snakes:
+            if snake.id == board_json["you"]["id"]:
+                continue
+            if snake.length + 2 < board_json["you"]["length"]:
+                self._set_cell(snake.head.x, snake.head.y, BattleSnakeCellType.EMPTY)
+            else:
+                for cell in self._diag_neighbours(snake.head):
+                    self._set_cell(cell.x, cell.y, BattleSnakeCellType.DANGER)
+
     def _is_valid(self, pos: BoardCoord):
         return 0 <= pos.x < self.width and 0 <= pos.y < self.height
 
@@ -62,7 +73,7 @@ class BattleSnakeBoard:
     def _is_extra_safe(self, pos: BoardCoord):
         if not self._is_safe(pos):
             return False
-        adj_safe = [x for x in self._neighbours(pos) if self.get_cell_from_coord(x).type != BattleSnakeCellType.DANGER]
+        adj_safe = [x for x in self._diag_neighbours(pos) if self.get_cell_from_coord(x).type != BattleSnakeCellType.DANGER]
         return len(adj_safe) >= 3  # Our previous body segment is danger, so only look for three
 
     def _safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
@@ -70,6 +81,10 @@ class BattleSnakeBoard:
 
     def _neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
         neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1)]
+        return [pos + x for x in neighbour_offsets if self._is_valid(pos + x)]
+
+    def _diag_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
+        neighbour_offsets = [BoardCoord(-1, 0), BoardCoord(1, 0), BoardCoord(0, -1), BoardCoord(0, 1), BoardCoord(-1, 1), BoardCoord(1, 1), BoardCoord(-1, -1), BoardCoord(1, -1)]
         return [pos + x for x in neighbour_offsets if self._is_valid(pos + x)]
 
     def _extra_safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
