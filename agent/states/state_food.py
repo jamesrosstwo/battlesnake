@@ -48,6 +48,7 @@ class BattleSnakeFoodState(BattleSnakeState):
 
         if path is None:
             entity.state_machine.change_state(BattleSnakeAvoidState.instance())
+            return entity.state_machine.calculate_action()
         next_node = BoardCoord(*path[0])
         d = next_node - entity.pos
         return get_action_to(d)
