@@ -38,8 +38,11 @@ class BattleSnakeFoodState(BattleSnakeState):
     def execute(self, entity):
         board = entity.board
         food_by_dist = sorted(board.food, key=lambda x: BattleSnakeBoard.dist(entity.snake.head, x))
+        
+        path = None
+        if entity.snake.health < 60:
+            path = try_safe_food_paths(board, entity, food_by_dist)
 
-        path = try_safe_food_paths(board, entity, food_by_dist)
         if path is None:
             smaller_snakes = [x for x in board.snakes if x.length < entity.snake.length]
             if len(smaller_snakes) < min(1, (board.num_snakes - 1)) or entity.snake.health < 40:
