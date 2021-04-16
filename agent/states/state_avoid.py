@@ -1,5 +1,25 @@
+from agent.actions.action import get_action_to
+from agent.environment.board import BattleSnakeBoard
+from agent.environment.coord import BoardCoord
 from agent.singleton import Singleton
 from agent.states.state import BattleSnakeState
+import random
+
+
+def try_rand_paths(board, entity):
+    path = None
+    shuffled_coords = [x.get_pos() for x in board.cells]
+    random.shuffle(shuffled_coords)
+
+    for coord in shuffled_coords:
+        try:
+            try_path = board.get_safe_path(entity.pos, coord)
+            path = try_path
+            break
+        except KeyError:
+            continue  # No path
+
+    return path
 
 
 @Singleton
@@ -8,9 +28,12 @@ class BattleSnakeAvoidState(BattleSnakeState):
         pass
 
     def execute(self, entity):
-        pass
+        board = entity.board
+
+        path = try_rand_paths(board, entity)
+        next_node = BoardCoord(*path[0])
+        d = next_node - entity.pos
+        return get_action_to(d)
 
     def exit(self, entity):
         pass
-
-

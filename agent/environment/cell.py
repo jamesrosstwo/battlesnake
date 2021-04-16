@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from agent.environment.coord import BoardCoord
 
 
 class BattleSnakeCellType(Enum):
@@ -19,4 +20,7 @@ class BattleSnakeCell:
         self.x = x
         self.y = y
         self.type = type
+
+    def get_pos(self):
+        return BoardCoord(self.x, self.y)
 

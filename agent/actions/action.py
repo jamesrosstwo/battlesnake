@@ -12,7 +12,7 @@ class BattleSnakeAction(Enum):
         return _action_map[action]
 
 
-def get_dir_to(d):
+def get_action_to(d):
     if d.x > 0:
         return BattleSnakeAction.RIGHT
     elif d.x < 0:

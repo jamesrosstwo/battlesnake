@@ -3,32 +3,9 @@
 from typing import List, Tuple, Dict, Optional
 from agent.data_structures import Queue, PriorityQueue
 from agent.environment.cell import BattleSnakeCellType, BattleSnakeCell, cell_symbols
+from agent.environment.coord import BoardCoord
 
 i = 0
-
-
-class BoardCoord:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __add__(self, other):
-        return BoardCoord(self.x + other.x, self.y + other.y)
-
-    def __sub__(self, other):
-        return BoardCoord(self.x - other.x, self.y - other.y)
-
-    def __str__(self):
-        return str(self.x) + ", " + str(self.y)
-
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
-    def __hash__(self):
-        return hash((self.x, self.y))
-
-    def get_tuple(self):
-        return self.x, self.y
 
 
 class BattleSnakeBoard:
@@ -77,8 +54,9 @@ class BattleSnakeBoard:
     def _is_extra_safe(self, pos: BoardCoord):
         if not self._is_safe(pos):
             return False
-        adj_danger = [self.get_cell_from_coord(x).type == BattleSnakeCellType.DANGER for x in self._neighbours(pos)]
-        return not any(adj_danger)
+        adj_safe = [self.get_cell_from_coord(x).type != BattleSnakeCellType.DANGER for x in self._neighbours(pos)]
+        print(adj_safe)
+        return all(adj_safe)
 
     def _safe_neighbours(self, pos: BoardCoord) -> List[BoardCoord]:
         return [x for x in self._neighbours(pos) if self._is_safe(x)]
@@ -129,6 +107,9 @@ class BattleSnakeBoard:
 
         c_f, c_s_f = dijkstra_search()
         return reconstruct_path(c_f)
+
+    def get_safe_path(self, start: BoardCoord, goal: BoardCoord):
+        return self.get_path(start, goal, neighbour_func=self._extra_safe_neighbours)
 
     # Manhattan distance because we're locked to a grid
     @staticmethod
